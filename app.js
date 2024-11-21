@@ -1,11 +1,18 @@
-import express from 'express';
+import bodyParser from "body-parser";
+import express from "express";
+import connectDB from "./src/Config/db.js";
+import categoryRoute from "./src/routes/categoryRoute.js";
+import itemRoute from "./src/routes/itemRoute.js";
+
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 5000;
 
-app.get("/", (req, res)=>{
- res.send("hello world")
-})
+connectDB();
 
-app.listen(port, ()=>{
-    console.log(`app is listening on port ${port}`);
-})
+app.use(bodyParser.json());
+app.use("/api/categories", categoryRoute);
+app.use("/api/items", itemRoute);
+
+app.listen(port, () => {
+  console.log(`app is listening on port ${port}`);
+});
