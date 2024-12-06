@@ -1,8 +1,8 @@
-import Category from "../Models/Category.js";
-import Item from "../Models/Item.js";
-import mongoose from "mongoose";
+const Category = require("../Models/Category.js");
+const Item = require("../Models/Item.js");
+const mongoose = require("mongoose");
 
-export const getItems = async (req, res) => {
+const getItems = async (req, res) => {
   try {
     const items = await Item.find().populate("category");
     res.json(items);
@@ -11,7 +11,7 @@ export const getItems = async (req, res) => {
   }
 };
 
-export const getItem = async (req, res) => {
+const getItem = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -29,7 +29,7 @@ export const getItem = async (req, res) => {
   }
 };
 
-export const createItem = async (req, res) => {
+const createItem = async (req, res) => {
   try {
     const category = await Category.findOne({ title: req.body.category });
     if (!category) {
@@ -45,7 +45,7 @@ export const createItem = async (req, res) => {
   }
 };
 
-export const updateItem = async (req, res) => {
+const updateItem = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -69,7 +69,7 @@ export const updateItem = async (req, res) => {
   }
 };
 
-export const deleteItem = async (req, res) => {
+const deleteItem = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -85,4 +85,12 @@ export const deleteItem = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+module.exports = {
+  getItems,
+  getItem,
+  createItem,
+  updateItem,
+  deleteItem,
 };

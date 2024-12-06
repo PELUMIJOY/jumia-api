@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const OtpSchema = new mongoose.Schema({
-  identifier: { type: String, required: true }, 
+  identifier: { type: String, required: true },
   otp: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now, expires: 300 }, 
+  createdAt: { type: Date, default: Date.now, expires: 300 },
 });
 
-export default mongoose.model("Otp", OtpSchema);
+module.exports = mongoose.model("Otp", OtpSchema);

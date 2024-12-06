@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
-export const oauthCallback = (req, res) => {
+const oauthCallback = (req, res) => {
   try {
     if (!req.user || !req.user.email) {
       return res.status(400).json({ error: 'User email not found in request.' });
@@ -12,4 +12,8 @@ export const oauthCallback = (req, res) => {
     console.error('Error in OAuth callback:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
+};
+
+module.exports = {
+  oauthCallback
 };

@@ -1,10 +1,9 @@
+const jwt = require('jsonwebtoken');
+const { generateOtp, sendOtpEmail, sendOtpSMS } = require('../services/OtpConfig');
+const Otp = require('../Models/Otp');
+const Users = require('../Models/Users');
 
-import jwt from 'jsonwebtoken';
-import { generateOtp, sendOtpEmail, sendOtpSMS } from '../services/OtpConfig';
-import Otp from '../Models/Otp';
-import Users from '../Models/Users';
-
-export const requestOtp = async (req, res) => {
+const requestOtp = async (req, res) => {
   const { email, phoneNumber } = req.body;
   const identifier = email || phoneNumber;
 
@@ -23,7 +22,7 @@ export const requestOtp = async (req, res) => {
   }
 };
 
-export const verifyOtp = async (req, res) => {
+const verifyOtp = async (req, res) => {
   const { identifier, otp } = req.body;
 
   try {
@@ -42,4 +41,9 @@ export const verifyOtp = async (req, res) => {
     console.error('Error verifying OTP:', err);
     res.status(500).json({ error: err.message });
   }
+};
+
+module.exports = {
+  requestOtp,
+  verifyOtp
 };

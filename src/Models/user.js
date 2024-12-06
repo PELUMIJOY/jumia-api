@@ -1,4 +1,4 @@
-import  mongoose  from "mongoose";
+const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true, sparse: true },
@@ -10,4 +10,4 @@ const UserSchema = new mongoose.Schema({
   provider: { type: String, enum: ['email', 'google', 'facebook'], required: true },
 }, { timestamps: true });
 
-export default mongoose.model("Users", UserSchema);
+module.exports = mongoose.model("Users", UserSchema);

@@ -1,11 +1,11 @@
-import express from "express";
-import bodyParser from "body-parser";
-import connectDB from "./src/Config/db.js";
-import passport from "./src/Config/passportConfig.js";
-import categoryRoute from "./src/routes/categoryRoute.js";
-import itemRoute from "./src/routes/itemRoute.js";
-import authRoute from "./src/routes/authRoute.js";
-import otpRoute from "./src/routes/otpRoute.js";
+const express = require("express");
+const bodyParser = require("body-parser");
+const connectDB = require("./src/Config/db.js");
+const passport = require("./src/Config/passportConfig.js");
+const categoryRoute = require("./src/routes/categoryRoute.js");
+const itemRoute = require("./src/routes/itemRoute.js");
+const authRoute = require("./src/routes/authRoute.js");
+const otpRoute = require("./src/routes/otpRoute.js");
 
 const app = express();
 const port = process.env.PORT || 5000;

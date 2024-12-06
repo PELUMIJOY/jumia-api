@@ -1,6 +1,6 @@
-import express from "express";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
@@ -12,11 +12,11 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("Database is connected succesfully");
+    console.log("Database is connected successfully");
   } catch (err) {
     console.error(err.message);
     process.exit(1);
   }
 };
 
-export default connectDB;
+module.exports = connectDB;

@@ -1,6 +1,6 @@
-import passport from "passport";
-import { initializePassportStrategies } from "../services/passportStrategies.js";
+const passport = require("passport");
+const { initializePassportStrategies } = require("../services/passportStrategies.js");
 
 initializePassportStrategies(passport);
 
-export default passport;
+module.exports = passport;

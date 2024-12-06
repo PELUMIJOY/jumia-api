@@ -1,12 +1,12 @@
 // Import required modules
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { Strategy as FacebookStrategy } from 'passport-facebook';
-import passport from 'passport';
-import Users from '../Models/User';
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const passport = require('passport');
+const Users = require('../Models/user');
 
 
 // Function to initialize Passport strategies
-export const initializePassportStrategies = (passport) => {
+const initializePassportStrategies = (passport) => {
   // Google OAuth Strategy
   passport.use(
     new GoogleStrategy(
@@ -64,4 +64,6 @@ export const initializePassportStrategies = (passport) => {
 
 };
 
-export default passport;
+module.exports = {
+  initializePassportStrategies,
+};
