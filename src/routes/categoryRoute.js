@@ -1,16 +1,16 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   getCategories,
   createCategory,
   getCategory,
   updateCategory,
   deleteCategory,
-} from "../Controller/categoryController.js";
-import validate from "../middleware/validator.js";
-import {
+} = require("../Controller/categoryController.js");
+const validate = require("../middleware/validator.js");
+const {
   createCategorySchema,
   updateCategorySchema,
-} from "../validations/categoryValidation.js";
+} = require("../validations/categoryValidation.js");
 
 const router = express.Router();
 
@@ -20,4 +20,4 @@ router.post("/", validate(createCategorySchema), createCategory);
 router.put("/:id", validate(updateCategorySchema), updateCategory);
 router.delete("/:id", deleteCategory);
 
-export default router;
+module.exports = router;

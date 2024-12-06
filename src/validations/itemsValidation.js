@@ -1,6 +1,6 @@
-import Joi from "joi";
+const Joi = require("joi");
 
-export const createItemSchema = Joi.object({
+const createItemSchema = Joi.object({
   name: Joi.string().min(3).max(50).required().messages({
     "string.base": '"Name" must be a string',
     "string.empty": '"Name" cannot be empty',
@@ -17,7 +17,7 @@ export const createItemSchema = Joi.object({
   imageUrl: Joi.string().required(),
 });
 
-export const updateItemSchema = Joi.object({
+const updateItemSchema = Joi.object({
   name: Joi.string().min(3).max(50).optional(),
   description: Joi.string().max(255).optional(),
   price: Joi.number().positive().optional(),
@@ -27,3 +27,8 @@ export const updateItemSchema = Joi.object({
   stock: Joi.number().integer().min(0).optional(),
   imageUrl: Joi.string().optional(),
 });
+
+module.exports = {
+  createItemSchema,
+  updateItemSchema,
+};
