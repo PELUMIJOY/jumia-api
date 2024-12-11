@@ -1,6 +1,6 @@
-import Joi from "joi";
+const Joi = require("joi");
 
-export const createCategorySchema = Joi.object({
+const createCategorySchema = Joi.object({
   title: Joi.string().min(3).max(30).required().messages({
     "string.base": '"Title" must be a string',
     "string.empty": '"Title" cannot be empty',
@@ -19,7 +19,7 @@ export const createCategorySchema = Joi.object({
     .optional(),
 });
 
-export const updateCategorySchema = Joi.object({
+const updateCategorySchema = Joi.object({
   title: Joi.string().min(3).max(30).optional(),
   description: Joi.string().max(100).optional(),
   subcategories: Joi.array()
@@ -31,3 +31,8 @@ export const updateCategorySchema = Joi.object({
     )
     .optional(),
 });
+
+module.exports = {
+  createCategorySchema,
+  updateCategorySchema,
+};
