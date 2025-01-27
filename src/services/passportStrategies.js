@@ -2,7 +2,7 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const passport = require('passport');
-const Users = require('../Models/user');
+const User = require("../models/User");
 
 
 // Function to initialize Passport strategies
@@ -17,9 +17,9 @@ const initializePassportStrategies = (passport) => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await Users.findOne({ googleId: profile.id });
+          let user = await User.findOne({ googleId: profile.id });
           if (!user) {
-            user = await Users.create({
+            user = await User.create({
               googleId: profile.id,
               name: profile.displayName || 'Unnamed User',
               email: profile.emails?.[0]?.value || undefined,
@@ -45,9 +45,9 @@ const initializePassportStrategies = (passport) => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await Users.findOne({ facebookId: profile.id });
+          let user = await User.findOne({ facebookId: profile.id });
           if (!user) {
-            user = await Users.create({
+            user = await User.create({
               facebookId: profile.id,
               name: `${profile.name?.givenName || ''} ${profile.name?.familyName || ''}`.trim(),
               email: profile.emails?.[0]?.value || undefined,
