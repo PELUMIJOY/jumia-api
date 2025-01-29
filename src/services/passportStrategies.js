@@ -2,7 +2,7 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const passport = require('passport');
-const User = require("../models/User");
+const User = require("../models/user");
 
 
 // Function to initialize Passport strategies
