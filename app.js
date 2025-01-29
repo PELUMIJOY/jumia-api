@@ -9,7 +9,7 @@ const otpRoute = require("./src/routes/otpRoute.js");
 const cartRoute = require("./src/routes/cartRoute.js");
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
 connectDB();
 

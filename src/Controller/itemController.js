@@ -1,5 +1,5 @@
-const Category = require("../Models/Category.js");
-const Item = require("../Models/Item.js");
+const Category = require("../models/Category.js");
+const Item = require("../models/Item.js");
 const mongoose = require("mongoose");
 
 const getItems = async (req, res) => {
