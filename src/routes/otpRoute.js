@@ -1,5 +1,5 @@
 const express = require('express');
-const { requestOtp, verifyOtp } = require('../Controller/otpController.js');
+const { requestOtp, verifyOtp } = require('../controller/otpController.js');
 
 const router = express.Router();
 

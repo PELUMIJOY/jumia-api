@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const twilio = require("twilio");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
-const Otp = require("../Models/otp");
+const Otp = require("../models/otp");
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const twilioClient = twilio(process.env.TWILLO_SID, process.env.TWILLO_AUTH_TOKEN);

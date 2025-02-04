@@ -5,7 +5,7 @@ const {
   getCategory,
   updateCategory,
   deleteCategory,
-} = require("../Controller/categoryController.js");
+} = require("../controller/categoryController.js");
 const validate = require("../middleware/validator.js");
 const {
   createCategorySchema,

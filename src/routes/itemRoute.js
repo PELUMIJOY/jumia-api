@@ -5,7 +5,7 @@ const {
   getItem,
   updateItem,
   deleteItem,
-} = require("../Controller/itemController.js");
+} = require("../controller/itemController.js");
 const validate = require("../middleware/validator.js");
 const {
   createItemSchema,

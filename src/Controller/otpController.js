@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const { generateOtp, sendOtpEmail, sendOtpSMS } = require("../services/OtpConfig");
+const { generateOtp, sendOtpEmail, sendOtpSMS } = require("../services/otpConfig");
 const User = require("../models/user");
-const Otp = require("../Models/otp");
+const Otp = require("../models/otp");
 
 // Request OTP
 exports.requestOtp = async (req, res) => {

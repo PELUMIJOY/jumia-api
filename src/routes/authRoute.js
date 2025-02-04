@@ -1,8 +1,8 @@
 const express = require("express");
 const passport = require("passport");
-const { signup, login, logout, getProtectedData } = require("../Controller/authController.js");
+const { signup, login, logout, getProtectedData } = require("../controller/authController.js");
 const verifyToken = require("../middleware/authMiddleware.js");
-const { oauthCallback } = require("../Controller/OauthController.js");
+const { oauthCallback } = require("../controller/oauthController.js");
 // const {
 //   signup,
 //   login,
