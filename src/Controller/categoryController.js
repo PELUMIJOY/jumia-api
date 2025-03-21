@@ -21,6 +21,19 @@ const getCategory = async (req, res) => {
   }
 };
 
+// const getCategory = async (req, res) => {
+//   try {
+//     const category = await Category.findById(req.params.id);
+//     if (!category) {
+//       return res.status(404).json({ error: "Category not found" });
+//     }
+//     const items = await Item.find({ category: category._id });
+
+//     res.json({ ...category.toObject(), items });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 const createCategory = async (req, res) => {
   try {
     const category = await Category.create(req.body);

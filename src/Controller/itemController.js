@@ -4,7 +4,17 @@ const mongoose = require("mongoose");
 
 const getItems = async (req, res) => {
   try {
-    const items = await Item.find().populate("category");
+    let query = {};
+
+    if (req.query.category) {
+      query.category = req.query.category;
+    }
+
+    if (req.query.name) {
+      query.name = new RegExp(req.query.name, "i");
+    }
+
+    const items = await Item.find(query).populate("category");
     res.json(items);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -31,7 +41,7 @@ const getItem = async (req, res) => {
 
 const createItem = async (req, res) => {
   try {
-    const category = await Category.findOne({ title: req.body.category });
+    const category = await Category.findById(req.body.category);
     if (!category) {
       return res.status(400).json({ error: "Invalid category title" });
     }
