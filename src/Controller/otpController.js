@@ -23,22 +23,31 @@ exports.requestOtp = async (req, res) => {
   }
 };
 
-// Verify OTP
 exports.verifyOtp = async (req, res) => {
   const { identifier, otp } = req.body;
 
   try {
+    // Check if OTP is valid
     const validOtp = await Otp.findOne({ identifier, otp });
-    if (!validOtp) return res.status(400).json({ error: "Invalid or expired OTP" });
-
-    let user = await User.findOne({ $or: [{ email: identifier }, { phoneNumber: identifier }] });
-
-    if (!user) {
-      user = await User.create({ email: identifier, phoneNumber: identifier, provider: "email" });
+    if (!validOtp) {
+      return res.status(400).json({ error: "Invalid or expired OTP" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    res.json({ token, user });
+    // Mark OTP as verified
+    await Otp.updateOne({ identifier }, { $set: { verified: true } });
+
+    // Check if user exists
+    const isEmail = identifier.includes("@");
+    let user = await User.findOne(isEmail ? { email: identifier } : { phone: identifier });
+
+    if (!user) {
+      return res.json({ message: "OTP verified. Proceed to set password." });
+    }
+
+    // Generate a token 
+    const token = jwt.sign({ id: identifier }, process.env.JWT_SECRET, { expiresIn: "10m" });
+
+    res.json({ message: "OTP verified", token });
   } catch (err) {
     console.error("Error verifying OTP:", err);
     res.status(500).json({ error: err.message });
