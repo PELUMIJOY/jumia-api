@@ -20,7 +20,11 @@ router.get(
     req.session.oauthRole = role;
     next();
   },
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", { 
+    scope: ["profile", "email"],
+    accessType: "offline",
+    approvalPrompt: "force",
+   })
 );
 
 // router.get(

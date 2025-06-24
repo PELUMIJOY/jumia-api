@@ -9,6 +9,9 @@ const otpRoute = require("./src/routes/otpRoute.js");
 const cartRoute = require("./src/routes/cartRoute.js");
 const locationRoute = require("./src/routes/locationRoute.js");
 const cors = require("cors");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;

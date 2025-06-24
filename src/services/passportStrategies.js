@@ -136,36 +136,36 @@ const initializePassportStrategies = (passport) => {
           const role = (req.session && req.session.oauthRole) || "user";
           
           // Check if user already exists
-          let user = await User.findOne({ googleId: profile.id });
+          // let user = await User.findOne({ googleId: profile.id });
           
-          if (!user) {
-            // Extract name information
-            const name = profile.displayName || profile.name?.givenName || 'Unnamed';
-            const lastName = profile.name?.familyName || 'User';
-            const email = profile.emails?.[0]?.value || `${profile.id}@gmail.com`;
+          // if (!user) {
+          //   // Extract name information
+          //   const name = profile.displayName || profile.name?.givenName || 'Unnamed';
+          //   const lastName = profile.name?.familyName || 'User';
+          //   const email = profile.emails?.[0]?.value || `${profile.id}@gmail.com`;
             
-            // Generate a secure random password
-            const password = crypto.randomBytes(16).toString('hex');
+          //   // Generate a secure random password
+          //   const password = crypto.randomBytes(16).toString('hex');
             
-            // Create new user with all required fields
-            user = await User.create({
-              googleId: profile.id,
-              name: name,
-              lastName: lastName,
-              email: email,
-              password: password,  // Will be hashed by the model's pre-save hook
-              provider: 'google',
-              role: role
-            });
-          } else {
-            // Update role if needed
-            if (role !== user.role) {
-              user.role = role;
-              await user.save();
-            }
-          }
+          //   // Create new user with all required fields
+          //   user = await User.create({
+          //     googleId: profile.id,
+          //     name: name,
+          //     lastName: lastName,
+          //     email: email,
+          //     password: password,  // Will be hashed by the model's pre-save hook
+          //     provider: 'google',
+          //     role: role
+          //   });
+          // } else {
+          //   // Update role if needed
+          //   if (role !== user.role) {
+          //     user.role = role;
+          //     await user.save();
+          //   }
+          // }
           
-          return done(null, user);
+          return done(null, _);
         } catch (err) {
           console.error("Google OAuth error:", err);
           return done(err, null);
