@@ -23,12 +23,24 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+// router.get(
+//   "/google/callback",
+//   passport.authenticate("google", ),
+//   oauthCallback
+// );
 router.get(
-  "/google/callback",
-  passport.authenticate("google", ),
-  oauthCallback
-);
+    "/google/callback",
+      (req, res, next) => {
+    // Store role in query parameters to access it in the strategy
+    const role = req.query.role || "user";
+    req.session = req.session || {};
+    req.session.oauthRole = role;
 
+    console.log(req.query, "request")
+      passport.authenticate("google")(req, res, next)
+  },
+
+)
 // Facebook OAuth routes with role parameter support
 router.get(
   "/facebook",
