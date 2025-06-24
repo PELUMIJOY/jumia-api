@@ -45,8 +45,9 @@ console.log("client id",process.env.GOOGLE_CLIENT_ID)
 console.log("cleint secret",process.env.GOOGLE_CLIENT_SECRET)
     console.log(req.query, "request")
       passport.authenticate("google",{
-        session:false,
-        keepSessionInfo:true
+        // session:false,
+        // keepSessionInfo:true,
+        failureRedirect:'/auth/google'
       })(req, res, next)
   },
 
