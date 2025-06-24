@@ -33,8 +33,10 @@ router.get(
       (req, res, next) => {
     // Store role in query parameters to access it in the strategy
     const role = req.query.role || "user";
+    console.log("session before", req.session)
     req.session = req.session || {};
     req.session.oauthRole = role;
+    console.log("session after", req.session)
 
     console.log(req.query, "request")
       passport.authenticate("google")(req, res, next)
