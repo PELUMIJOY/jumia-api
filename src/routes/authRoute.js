@@ -37,7 +37,8 @@ router.get(
     req.session = req.session || {};
     req.session.oauthRole = role;
     console.log("session after", req.session)
-
+console.log("client id",process.env.GOOGLE_CLIENT_ID)
+console.log("cleint secret",process.env.GOOGLE_CLIENT_SECRET)
     console.log(req.query, "request")
       passport.authenticate("google",{
         session:false,

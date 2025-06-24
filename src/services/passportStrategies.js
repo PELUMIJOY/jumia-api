@@ -115,7 +115,9 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const crypto = require('crypto');
 const User = require("../models/user");
+const dotenv = require("dotenv");
 
+dotenv.config();
 // Function to initialize Passport strategies
 const initializePassportStrategies = (passport) => {
   // Google OAuth Strategy
