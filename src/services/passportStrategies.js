@@ -128,6 +128,7 @@ const initializePassportStrategies = (passport) => {
         passReqToCallback: true  // Allow access to request object
       },
       async (req, accessToken, refreshToken, profile, done) => {
+        console.log("Profile", profile)
         try {
           // Get role from session or default to user
           const role = (req.session && req.session.oauthRole) || "user";
