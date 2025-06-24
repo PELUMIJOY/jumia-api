@@ -32,25 +32,40 @@ router.get(
 //   passport.authenticate("google", ),
 //   oauthCallback
 // );
-router.get(
-    "/google/callback",
-      (req, res, next) => {
-    // Store role in query parameters to access it in the strategy
-    const role = req.query.role || "user";
-    console.log("session before", req.session)
-    req.session = req.session || {};
-    req.session.oauthRole = role;
-    console.log("session after", req.session)
-console.log("client id",process.env.GOOGLE_CLIENT_ID)
-console.log("cleint secret",process.env.GOOGLE_CLIENT_SECRET)
-    console.log(req.query, "request")
-      passport.authenticate("google",{
-        // session:false,
-        // keepSessionInfo:true,
-        failureRedirect:'/auth/google'
-      })(req, res, next)
-  },
+// router.get(
+//     "/google/callback",
+//       (req, res, next) => {
+//     // Store role in query parameters to access it in the strategy
+//     const role = req.query.role || "user";
+//     console.log("session before", req.session)
+//     req.session = req.session || {};
+//     req.session.oauthRole = role;
+//     console.log("session after", req.session)
+// console.log("client id",process.env.GOOGLE_CLIENT_ID)
+// console.log("cleint secret",process.env.GOOGLE_CLIENT_SECRET)
+//     console.log(req.query, "request")
+//       passport.authenticate("google",{
+//         // session:false,
+//         // keepSessionInfo:true,
+//         failureRedirect:'/auth/google'
+//       })(req, res, next)
+//   },
 
+// )
+
+router.get(
+  '/google/callback',
+   passport.authenticate('google'), // complete the authenticate using the google strategy
+  (err, req, res, next) => { // custom error handler to catch any errors, such as TokenError
+    if (err.name === 'TokenError') {
+     res.redirect('/auth/google'); // redirect them back to the login page
+    } else {
+     // Handle other errors here
+    }
+  },
+  (req, res) => { // On success, redirect back to '/'
+    res.redirect('/');
+  }
 )
 // Facebook OAuth routes with role parameter support
 router.get(
