@@ -39,7 +39,10 @@ router.get(
     console.log("session after", req.session)
 
     console.log(req.query, "request")
-      passport.authenticate("google")(req, res, next)
+      passport.authenticate("google",{
+        session:false,
+        keepSessionInfo:true
+      })(req, res, next)
   },
 
 )
