@@ -8,7 +8,7 @@ const createCategorySchema = Joi.object({
     "string.max": '"Title" should have at most 50 characters',
     "any.required": '"Title" is required',
   }),
-  description: Joi.string().max(100).optional(),
+  description: Joi.string().max(1000).optional(),
   subcategories: Joi.array()
     .items(
       Joi.object({
@@ -21,7 +21,7 @@ const createCategorySchema = Joi.object({
 
 const updateCategorySchema = Joi.object({
   title: Joi.string().min(3).max(30).optional(),
-  description: Joi.string().max(100).optional(),
+  description: Joi.string().max(1000).optional(),
   subcategories: Joi.array()
     .items(
       Joi.object({

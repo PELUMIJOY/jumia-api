@@ -8,7 +8,7 @@ const createItemSchema = Joi.object({
     "string.max": '"Name" should have at most 50 characters',
     "any.required": '"Name" is required',
   }),
-  description: Joi.string().max(255).optional(),
+  description: Joi.string().max(1000).optional(),
   price: Joi.number().positive().required(),
   category: Joi.string().required().messages({
     "any.required": '"Category" is required',
@@ -19,7 +19,7 @@ const createItemSchema = Joi.object({
 
 const updateItemSchema = Joi.object({
   name: Joi.string().min(3).max(50).optional(),
-  description: Joi.string().max(255).optional(),
+  description: Joi.string().max(1000).optional(),
   price: Joi.number().positive().optional(),
   category: Joi.string().optional().messages({
     "any.required": '"Category" is required',
