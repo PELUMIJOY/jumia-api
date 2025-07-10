@@ -15,20 +15,20 @@ const { auth } = require("./src/utils/auth.js");
 dotenv.config();
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "*",
+
+    credentials: true,
+  })
+);
+
 const port = process.env.PORT || 3000;
 
 connectDB();
 
 // Allow all origins
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5000",
-      "https://ecommerce-app-sgr3-git-main-pelumijoys-projects.vercel.app/",
-    ],
-    credentials:true
-  })
-);
 
 app.all("/api/auth/*", toNodeHandler(auth));
 app.use(bodyParser.json());
