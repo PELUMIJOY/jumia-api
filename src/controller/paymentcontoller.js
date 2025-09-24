@@ -1,5 +1,5 @@
 const axios = require("axios");
-const Order = require("../models/Order");
+const Order = require("../models/order");
 
 const initiatePayment = async (req, res) => {
   try {
