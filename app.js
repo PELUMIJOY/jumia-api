@@ -6,6 +6,7 @@ const itemRoute = require("./src/routes/itemRoute.js");
 const authRoute = require("./src/routes/authRoute.js");
 const otpRoute = require("./src/routes/otpRoute.js");
 const cartRoute = require("./src/routes/cartRoute.js");
+const paymentRoute = require("./src/routes/paymentRoute.js");
 const locationRoute = require("./src/routes/locationRoute.js");
 const { toNodeHandler } = require("better-auth/node");
 const cors = require("cors");
@@ -15,10 +16,12 @@ const { auth } = require("./src/utils/auth.js");
 dotenv.config();
 
 const app = express();
-
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "https://ecommerce-app-sgr3-git-main-pelumijoys-projects.vercel.app",
+      "http://localhost:5000",
+    ],
 
     credentials: true,
   })
@@ -38,6 +41,7 @@ app.use("/api/locations", locationRoute);
 app.use("/auth", authRoute);
 app.use("/otp", otpRoute);
 app.use("/api/cart", cartRoute);
+app.use("/api/payments", paymentRoute);
 
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);

@@ -1,5 +1,9 @@
 const jwt = require("jsonwebtoken");
-const { generateOtp, sendOtpEmail, sendOtpSMS } = require("../services/otpConfig");
+const {
+  generateOtp,
+  sendOtpEmail,
+  sendOtpSMS,
+} = require("../services/otpConfig");
 const User = require("../models/user");
 const Otp = require("../models/otp");
 
@@ -8,7 +12,8 @@ exports.requestOtp = async (req, res) => {
   const { email, phoneNumber } = req.body;
   const identifier = email || phoneNumber;
 
-  if (!identifier) return res.status(400).json({ error: "Email or phone number is required" });
+  if (!identifier)
+    return res.status(400).json({ error: "Email or phone number is required" });
 
   try {
     const otp = await generateOtp(identifier);
@@ -38,14 +43,18 @@ exports.verifyOtp = async (req, res) => {
 
     // Check if user exists
     const isEmail = identifier.includes("@");
-    let user = await User.findOne(isEmail ? { email: identifier } : { phone: identifier });
+    let user = await User.findOne(
+      isEmail ? { email: identifier } : { phone: identifier }
+    );
 
     if (!user) {
       return res.json({ message: "OTP verified. Proceed to set password." });
     }
 
-    // Generate a token 
-    const token = jwt.sign({ id: identifier }, process.env.JWT_SECRET, { expiresIn: "10m" });
+    // Generate a token
+    const token = jwt.sign({ id: identifier }, process.env.JWT_SECRET, {
+      expiresIn: "10m",
+    });
 
     res.json({ message: "OTP verified", token });
   } catch (err) {

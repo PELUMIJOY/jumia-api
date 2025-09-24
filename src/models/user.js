@@ -5,24 +5,53 @@ const UserSchema = new mongoose.Schema(
   {
     // Common fields for all users
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true,  },
+    password: { type: String, required: true },
     name: { type: String, required: true },
     lastName: { type: String, required: true },
     phone: { type: String, unique: true, sparse: true },
     googleId: { type: String, unique: true, sparse: true },
     facebookId: { type: String, unique: true, sparse: true },
-    provider: { type: String, enum: ["email", "google", "facebook", "phone"], required: true },
+    provider: {
+      type: String,
+      enum: ["email", "google", "facebook", "phone"],
+      required: true,
+    },
     role: { type: String, enum: ["user", "vendor", "admin"], required: true },
-    
+
     // Vendor specific fields
-    country: { type: String, required: function() { return this.role === "vendor"; } },
-    shoppingZone: { type: String, required: function() { return this.role === "vendor"; } },
-    shopName: { type: String, required: function() { return this.role === "vendor"; } },
-    accountType: { type: String, enum: ["Business", "Individual"], required: function() { return this.role === "vendor"; } },
-    
+    country: {
+      type: String,
+      required: function () {
+        return this.role === "vendor";
+      },
+    },
+    shoppingZone: {
+      type: String,
+      required: function () {
+        return this.role === "vendor";
+      },
+    },
+    shopName: {
+      type: String,
+      required: function () {
+        return this.role === "vendor";
+      },
+    },
+    accountType: {
+      type: String,
+      enum: ["Business", "Individual"],
+      required: function () {
+        return this.role === "vendor";
+      },
+    },
+
     // Other optional fields that might be needed later
     isVerified: { type: Boolean, default: false },
-    status: { type: String, enum: ["active", "inactive", "suspended"], default: "active" }
+    status: {
+      type: String,
+      enum: ["active", "inactive", "suspended"],
+      default: "active",
+    },
   },
   { timestamps: true }
 );

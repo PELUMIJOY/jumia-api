@@ -5,99 +5,100 @@ const orderManagementSchema = new mongoose.Schema(
     orderNumber: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     customer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
     vendor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Assuming vendors are also stored in the User model
-      required: true
+      ref: "User",
+      required: true,
     },
     items: [
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Item",
-          required: true
+          required: true,
         },
         quantity: {
           type: Number,
           required: true,
-          min: 1
+          min: 1,
         },
         price: {
           type: Number,
-          required: true
-        }
-      }
+          required: true,
+        },
+      },
     ],
     totalAmount: {
       type: Number,
-      required: true
+      required: true,
     },
     status: {
       type: String,
       enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
-      default: "pending"
+      default: "pending",
     },
     statusHistory: [
       {
         status: {
           type: String,
-          enum: ["pending", "processing", "shipped", "delivered", "cancelled"]
+          enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
         },
         timestamp: {
           type: Date,
-          default: Date.now
+          default: Date.now,
         },
         updatedBy: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User"
-        }
-      }
+          ref: "User",
+        },
+      },
     ],
     orderDate: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     shipmentMethod: {
       type: String,
-      required: true
+      required: true,
     },
     shippingAddress: {
       street: String,
       city: String,
       state: String,
       zipCode: String,
-      country: String
+      country: String,
     },
     paymentMethod: {
       type: String,
-      required: true
+      required: true,
     },
     paymentDetails: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Payment"
+      ref: "Payment",
     },
     trackingNumber: String,
     labels: [String],
-    notes: String
+    notes: String,
   },
   { timestamps: true }
 );
 
 // Generate order number before saving
-orderSchema.pre("save", async function(next) {
+orderSchema.pre("save", async function (next) {
   if (!this.orderNumber) {
     // Creating a simple order number format: ORD-YYYYMMDD-XXXX (where XXXX is a random number)
     const date = new Date();
-    const dateStr = date.getFullYear() + 
-      String(date.getMonth() + 1).padStart(2, '0') + 
-      String(date.getDate()).padStart(2, '0');
+    const dateStr =
+      date.getFullYear() +
+      String(date.getMonth() + 1).padStart(2, "0") +
+      String(date.getDate()).padStart(2, "0");
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     this.orderNumber = `ORD-${dateStr}-${randomNum}`;
   }

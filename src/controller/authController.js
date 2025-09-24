@@ -1,68 +1,46 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const Otp = require("../models/otp");
+const { auth } = require("../utils/auth.js");
 
-// Generate JWT Token
-const generateToken = (user) => {
-  return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
-};
-
-// 🟢 Signup
 exports.signup = async (req, res) => {
   try {
-    const { 
-      email, 
-      password, 
-      name, 
-      lastName, 
-      phone, 
-      provider, 
-      role, 
-      country, 
-      shoppingZone, 
-      shopName, 
-      accountType 
+    const {
+      email,
+      password,
+      name,
+      lastName,
+      phone,
+      role,
+      country,
+      shoppingZone,
+      shopName,
+      accountType,
     } = req.body;
 
+    // Validate role
     if (!["vendor", "user"].includes(role)) {
       return res.status(400).json({ message: "Invalid role" });
     }
 
-    if (!provider || !["email", "google", "facebook", "phone"].includes(provider)) {
-      return res.status(400).json({ message: "Invalid provider" });
-    }
-
-    // Ensure OTP verification
-    const otpRecord = await Otp.findOne({ identifier: email, verified: true });
-    if (!otpRecord) {
-      return res.status(400).json({ message: "OTP verification required before signing up." });
-    }
-
-    // Check for existing user
-    if (await User.findOne({ email })) {
-      return res.status(400).json({ message: "Email already in use" });
-    }
-
-    // Create user data object based on role
+    // Prepare user data
     let userData = {
       email,
-      password, // Password will be hashed by pre-save hook in the model
+      password,
       name,
-      lastName,
-      phone,
-      provider,
-      role
+      role,
+      phone: phone || "",
+      lastName: lastName || "",
     };
 
     // Add vendor-specific fields if role is vendor
     if (role === "vendor") {
       if (!country || !shoppingZone || !shopName || !accountType) {
-        return res.status(400).json({ 
-          message: "Missing required vendor fields", 
-          requiredFields: ["country", "shoppingZone", "shopName", "accountType"] 
+        return res.status(400).json({
+          message: "Missing required vendor fields",
+          requiredFields: [
+            "country",
+            "shoppingZone",
+            "shopName",
+            "accountType",
+          ],
         });
       }
 
@@ -71,69 +49,173 @@ exports.signup = async (req, res) => {
         country,
         shoppingZone,
         shopName,
-        accountType
+        accountType,
       };
     }
 
-    // Create new user with all required fields
-    const newUser = await User.create(userData);
+    // Create user with Better-Auth
+    const result = await auth.api.signUpEmail({
+      body: userData,
+      headers: req.headers,
+    });
 
-    const token = generateToken(newUser);
+    if (!result.user) {
+      return res.status(400).json({
+        message: "Failed to create account",
+      });
+    }
 
-    res.cookie("token", token, { httpOnly: true, secure: true });
+    // Set session cookie
+    if (result.token) {
+      res.cookie("better-auth.session_token", result.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      });
+    }
 
-    // Remove OTP after successful signup
-    await Otp.deleteOne({ identifier: email });
-
-    res.status(201).json({ 
-      message: "User registered successfully", 
+    res.status(201).json({
+      message: "User registered successfully",
       user: {
-        ...newUser.toObject(),
-        password: undefined  // Don't send password back to client
-      }
+        id: result.user.id,
+        email: result.user.email,
+        name: result.user.name,
+        lastName: result.user.lastName,
+        role: result.user.role,
+        phone: result.user.phone,
+        country: result.user.country,
+        shoppingZone: result.user.shoppingZone,
+        shopName: result.user.shopName,
+        accountType: result.user.accountType,
+      },
     });
   } catch (error) {
     console.error("Signup error:", error);
-    res.status(500).json({ message: "Server Error", error: error.toString() });
+
+    // Handle specific Better-Auth errors
+    if (error.message?.includes("User already exists")) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
+
+    res.status(500).json({
+      message: "Server Error",
+      error: error.message,
+    });
   }
 };
 
-// 🟢 Login
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }).select("+password");
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(400).json({ message: "Invalid email or password" });
+    console.log("Login attempt for:", email);
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
     }
 
-    const token = jwt.sign(
-      { id: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1h",
-      }
-    );
+    // Sign in with Better-Auth
+    const result = await auth.api.signInEmail({
+      body: { email, password },
+      headers: req.headers,
+    });
 
-    res.cookie("token", token, { httpOnly: true, secure: true });
+    console.log("Better-Auth login result:", result);
+
+    if (!result.user || !result.token) {
+      console.log("Login failed - no user or token in result");
+      return res.status(400).json({
+        message: "Invalid email or password",
+      });
+    }
+
+    // Set session cookie
+    res.cookie("better-auth.session_token", result.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    });
 
     res.status(200).json({
       message: "Login successful",
-      user: { ...user.toObject(), password: undefined },
+      user: {
+        id: result.user.id,
+        email: result.user.email,
+        name: result.user.name,
+        lastName: result.user.lastName,
+        role: result.user.role,
+        phone: result.user.phone,
+        country: result.user.country,
+        shoppingZone: result.user.shoppingZone,
+        shopName: result.user.shopName,
+        accountType: result.user.accountType,
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error: error.message });
+    console.error("Login error:", error);
+    console.error("Error details:", error.response?.data || error.message);
+
+    if (
+      error.message?.includes("Invalid credentials") ||
+      error.message?.includes("User not found") ||
+      error.response?.status === 400
+    ) {
+      return res.status(400).json({
+        message: "Invalid email or password",
+      });
+    }
+
+    res.status(500).json({
+      message: "Server Error",
+      error: error.message,
+    });
   }
 };
 
-// 🟢 Logout
-exports.logout = (req, res) => {
-  res.clearCookie("token");
-  res.json({ message: "Logged out successfully" });
+exports.logout = async (req, res) => {
+  try {
+    // Get session token from cookie
+    const sessionToken = req.cookies["better-auth.session_token"];
+
+    if (sessionToken) {
+      // Sign out with Better-Auth
+      await auth.api.signOut({
+        headers: {
+          ...req.headers,
+          cookie: `better-auth.session_token=${sessionToken}`,
+        },
+      });
+    }
+
+    // Clear the session cookie
+    res.clearCookie("better-auth.session_token");
+
+    res.json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    // Still clear cookie even if Better-Auth call fails
+    res.clearCookie("better-auth.session_token");
+    res.json({ message: "Logged out successfully" });
+  }
 };
 
-// 🛑 Protected Route
-exports.getProtectedData = (req, res) => {
-  res.json({ message: "Protected Data Access Granted", user: req.user });
+//  Protected Route - Get user data
+exports.getProtectedData = async (req, res) => {
+  try {
+    // User data is already attached by middleware
+    res.json({
+      message: "Protected Data Access Granted",
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Protected route error:", error);
+    res.status(500).json({
+      message: "Server Error",
+      error: error.message,
+    });
+  }
 };
