@@ -10,7 +10,7 @@ const auth = betterAuth({
   database: mongodbAdapter(db),
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false, // Set to true if you want email verification
+    requireEmailVerification: false, 
   },
   socialProviders: {
     google: {

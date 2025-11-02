@@ -8,6 +8,7 @@ const otpRoute = require("./src/routes/otpRoute.js");
 const cartRoute = require("./src/routes/cartRoute.js");
 const paymentRoute = require("./src/routes/paymentRoute.js");
 const locationRoute = require("./src/routes/locationRoute.js");
+const reviewRoute = require("./src/routes/reviewRoute.js");
 const { toNodeHandler } = require("better-auth/node");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -42,6 +43,8 @@ app.use("/auth", authRoute);
 app.use("/otp", otpRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/payments", paymentRoute);
+app.use("/api/reviews", reviewRoute);
+
 
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);
